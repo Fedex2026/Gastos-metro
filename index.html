@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gastos Operadores</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="app">
+    <header>
+      <h1>Gastos Operativos</h1>
+      <p>Control diario y semanal</p>
+    </header>
+
+    <section class="card">
+      <label>Nombre del operador</label>
+      <select id="operador">
+        <option value="">Selecciona operador</option>
+        <option>Saúl Galván</option>
+        <option>Juan Pérez</option>
+        <option>Carlos López</option>
+        <option>Mario Hernández</option>
+      </select>
+
+      <label>Tipo de gasto</label>
+      <select id="tipoGasto">
+        <option value="">Selecciona gasto</option>
+        <option>Gas</option>
+        <option>Diésel</option>
+        <option>Comida</option>
+        <option>Otros</option>
+      </select>
+
+      <input 
+        type="text" 
+        id="otroGasto" 
+        placeholder="Escribe el tipo de gasto" 
+        class="hidden"
+      />
+
+      <label>Cantidad</label>
+      <input type="number" id="cantidad" placeholder="$0.00" />
+
+      <button id="guardarBtn">Guardar gasto</button>
+    </section>
+
+    <section class="resumen">
+      <div>
+        <h3>Hoy</h3>
+        <p id="totalDiario">$0</p>
+      </div>
+      <div>
+        <h3>Semana</h3>
+        <p id="totalSemanal">$0</p>
+      </div>
+    </section>
+
+    <section class="historial">
+      <h2>Historial</h2>
+      <div id="listaGastos"></div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
