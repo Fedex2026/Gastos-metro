@@ -1,0 +1,155 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b1220;
+  color: white;
+}
+
+.app {
+  max-width: 430px;
+  margin: auto;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  margin: 0;
+  color: #38bdf8;
+}
+
+header p {
+  color: #94a3b8;
+}
+
+.card {
+  background: #111827;
+  padding: 18px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.3);
+}
+
+label {
+  display: block;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+select,
+input {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  background: #1f2937;
+  color: white;
+  font-size: 15px;
+  outline: none;
+}
+
+input::placeholder {
+  color: #9ca3af;
+}
+
+button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+.hidden {
+  display: none;
+}
+
+.resumen {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.resumen div {
+  background: #111827;
+  padding: 16px;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.resumen h3 {
+  margin: 0;
+  color: #94a3b8;
+}
+
+.resumen p {
+  margin: 8px 0 0;
+  font-size: 22px;
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.historial {
+  background: #111827;
+  padding: 16px;
+  border-radius: 18px;
+}
+
+.historial h2 {
+  margin-top: 0;
+}
+
+.gasto {
+  background: #1f2937;
+  padding: 12px;
+  border-radius: 14px;
+  margin-bottom: 10px;
+}
+
+.gasto strong {
+  color: #38bdf8;
+}
+
+.gasto p {
+  margin: 4px 0;
+  color: #d1d5db;
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.acciones button {
+  margin: 0;
+  padding: 9px;
+  font-size: 13px;
+}
+
+.editar {
+  background: #f59e0b;
+}
+
+.borrar {
+  background: #dc2626;
+}
