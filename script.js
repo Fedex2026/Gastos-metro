@@ -7,13 +7,13 @@ const totalDiario = document.getElementById("totalDiario");
 const totalSemanal = document.getElementById("totalSemanal");
 const tipoBtns = document.querySelectorAll(".tipo-btn");
 
-let gastos = JSON.parse(localStorage.getItem("gastos")) || [];
+let gastos = JSON.parse(localStorage.getItem("gastosOperativos")) || [];
 let tipoSeleccionado = "";
 let editandoIndex = null;
 
-tipoBtns.forEach(btn => {
+tipoBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
-    tipoBtns.forEach(b => b.classList.remove("activo"));
+    tipoBtns.forEach((b) => b.classList.remove("activo"));
     btn.classList.add("activo");
 
     tipoSeleccionado = btn.dataset.tipo;
@@ -27,13 +27,15 @@ tipoBtns.forEach(btn => {
   });
 });
 
-guardarBtn.addEventListener("click", () => {
+guardarBtn.addEventListener("click", guardarGasto);
+
+function guardarGasto() {
   const operadorValue = operador.value;
-  const tipoValue = tipoSeleccionado === "Otros" ? otroGasto.value : tipoSeleccionado;
+  const tipoValue = tipoSeleccionado === "Otros" ? otroGasto.value.trim() : tipoSeleccionado;
   const cantidadValue = Number(cantidad.value);
 
-  if (!operadorValue || !tipoValue || !cantidadValue) {
-    alert("Completa todos los campos");
+  if (!operadorValue || !tipoValue || cantidadValue <= 0) {
+    alert("Completa operador, gasto y cantidad");
     return;
   }
 
@@ -41,7 +43,7 @@ guardarBtn.addEventListener("click", () => {
     operador: operadorValue,
     tipo: tipoValue,
     cantidad: cantidadValue,
-    fecha: new Date().toISOString()
+    fecha: editandoIndex !== null ? gastos[editandoIndex].fecha : new Date().toISOString()
   };
 
   if (editandoIndex !== null) {
@@ -52,22 +54,23 @@ guardarBtn.addEventListener("click", () => {
     gastos.push(gasto);
   }
 
-  localStorage.setItem("gastos", JSON.stringify(gastos));
+  localStorage.setItem("gastosOperativos", JSON.stringify(gastos));
   limpiarFormulario();
   mostrarGastos();
-});
+}
 
 function mostrarGastos() {
   listaGastos.innerHTML = "";
 
-  gastos.forEach((gasto, index) => {
+  gastos.slice().reverse().forEach((gasto, reverseIndex) => {
+    const index = gastos.length - 1 - reverseIndex;
     const fecha = new Date(gasto.fecha);
 
     const div = document.createElement("div");
     div.className = "gasto";
 
     div.innerHTML = `
-      <p><strong>${iconoGasto(gasto.tipo)} ${gasto.operador}</strong></p>
+      <p><strong>${icono(gasto.tipo)} ${gasto.operador}</strong></p>
       <p>Gasto: ${gasto.tipo}</p>
       <p>Cantidad: $${gasto.cantidad}</p>
       <p>Fecha: ${fecha.toLocaleDateString()} ${fecha.toLocaleTimeString()}</p>
@@ -78,13 +81,13 @@ function mostrarGastos() {
       </div>
     `;
 
-    listaGastos.prepend(div);
+    listaGastos.appendChild(div);
   });
 
   calcularTotales();
 }
 
-function iconoGasto(tipo) {
+function icono(tipo) {
   if (tipo === "Gas") return "⛽";
   if (tipo === "Diésel") return "🛢️";
   if (tipo === "Comida") return "🍽️";
@@ -96,24 +99,18 @@ function editarGasto(index) {
 
   operador.value = gasto.operador;
   cantidad.value = gasto.cantidad;
-  tipoSeleccionado = gasto.tipo;
 
-  tipoBtns.forEach(btn => {
-    btn.classList.remove("activo");
+  tipoBtns.forEach((btn) => btn.classList.remove("activo"));
 
-    if (btn.dataset.tipo === gasto.tipo) {
-      btn.classList.add("activo");
-    }
-  });
-
-  if (!["Gas", "Diésel", "Comida"].includes(gasto.tipo)) {
+  if (["Gas", "Diésel", "Comida"].includes(gasto.tipo)) {
+    tipoSeleccionado = gasto.tipo;
+    document.querySelector(`[data-tipo="${gasto.tipo}"]`).classList.add("activo");
+    otroGasto.classList.add("hidden");
+  } else {
     tipoSeleccionado = "Otros";
+    document.querySelector(`[data-tipo="Otros"]`).classList.add("activo");
     otroGasto.classList.remove("hidden");
     otroGasto.value = gasto.tipo;
-
-    tipoBtns.forEach(btn => {
-      if (btn.dataset.tipo === "Otros") btn.classList.add("activo");
-    });
   }
 
   editandoIndex = index;
@@ -121,9 +118,9 @@ function editarGasto(index) {
 }
 
 function borrarGasto(index) {
-  if (confirm("¿Seguro que quieres borrar este gasto?")) {
+  if (confirm("¿Borrar este gasto?")) {
     gastos.splice(index, 1);
-    localStorage.setItem("gastos", JSON.stringify(gastos));
+    localStorage.setItem("gastosOperativos", JSON.stringify(gastos));
     mostrarGastos();
   }
 }
@@ -132,11 +129,12 @@ function calcularTotales() {
   const hoy = new Date();
   const inicioSemana = new Date();
   inicioSemana.setDate(hoy.getDate() - hoy.getDay());
+  inicioSemana.setHours(0, 0, 0, 0);
 
   let diario = 0;
   let semanal = 0;
 
-  gastos.forEach(gasto => {
+  gastos.forEach((gasto) => {
     const fecha = new Date(gasto.fecha);
 
     if (fecha.toDateString() === hoy.toDateString()) {
@@ -156,8 +154,9 @@ function filtrarGastos(tipo) {
   const hoy = new Date();
   const inicioSemana = new Date();
   inicioSemana.setDate(hoy.getDate() - hoy.getDay());
+  inicioSemana.setHours(0, 0, 0, 0);
 
-  return gastos.filter(gasto => {
+  return gastos.filter((gasto) => {
     const fecha = new Date(gasto.fecha);
 
     if (tipo === "dia") {
@@ -180,15 +179,15 @@ function mandarWhatsApp(tipo) {
 
   let mensaje = `*Reporte de gastos ${tipo === "dia" ? "del día" : "de la semana"}*\n\n`;
 
-  lista.forEach(g => {
+  lista.forEach((g) => {
     const fecha = new Date(g.fecha);
-    mensaje += `${iconoGasto(g.tipo)} ${g.operador}\n`;
+    mensaje += `${icono(g.tipo)} ${g.operador}\n`;
     mensaje += `Gasto: ${g.tipo}\n`;
     mensaje += `Cantidad: $${g.cantidad}\n`;
-    mensaje += `Fecha: ${fecha.toLocaleDateString()}\n\n`;
+    mensaje += `Fecha: ${fecha.toLocaleDateString()} ${fecha.toLocaleTimeString()}\n\n`;
   });
 
-  mensaje += `*Total: $${total}*`;
+  mensaje += `*TOTAL: $${total}*`;
 
   window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, "_blank");
 }
@@ -196,21 +195,20 @@ function mandarWhatsApp(tipo) {
 function generarExcel() {
   let csv = "Operador,Tipo,Cantidad,Fecha\n";
 
-  gastos.forEach(g => {
-    const fecha = new Date(g.fecha).toLocaleString();
-    csv += `${g.operador},${g.tipo},${g.cantidad},${fecha}\n`;
+  gastos.forEach((g) => {
+    csv += `"${g.operador}","${g.tipo}","${g.cantidad}","${new Date(g.fecha).toLocaleString()}"\n`;
   });
 
-  descargarArchivo(csv, "reporte_gastos.csv", "text/csv");
+  descargar(csv, "gastos_operativos.csv", "text/csv");
 }
 
 function generarWord() {
-  let contenido = `
+  let html = `
     <html>
     <head><meta charset="UTF-8"></head>
     <body>
       <h1>Reporte de Gastos Operativos</h1>
-      <table border="1" cellpadding="8">
+      <table border="1" cellpadding="8" cellspacing="0">
         <tr>
           <th>Operador</th>
           <th>Tipo</th>
@@ -219,35 +217,36 @@ function generarWord() {
         </tr>
   `;
 
-  gastos.forEach(g => {
-    const fecha = new Date(g.fecha).toLocaleString();
-    contenido += `
+  gastos.forEach((g) => {
+    html += `
       <tr>
         <td>${g.operador}</td>
         <td>${g.tipo}</td>
         <td>$${g.cantidad}</td>
-        <td>${fecha}</td>
+        <td>${new Date(g.fecha).toLocaleString()}</td>
       </tr>
     `;
   });
 
-  contenido += `
+  html += `
       </table>
     </body>
     </html>
   `;
 
-  descargarArchivo(contenido, "reporte_gastos.doc", "application/msword");
+  descargar(html, "gastos_operativos.doc", "application/msword");
 }
 
-function descargarArchivo(contenido, nombre, tipo) {
+function descargar(contenido, nombre, tipo) {
   const blob = new Blob([contenido], { type: tipo });
   const url = URL.createObjectURL(blob);
-
   const a = document.createElement("a");
+
   a.href = url;
   a.download = nombre;
+  document.body.appendChild(a);
   a.click();
+  document.body.removeChild(a);
 
   URL.revokeObjectURL(url);
 }
@@ -258,7 +257,7 @@ function limpiarFormulario() {
   otroGasto.value = "";
   otroGasto.classList.add("hidden");
   tipoSeleccionado = "";
-  tipoBtns.forEach(btn => btn.classList.remove("activo"));
+  tipoBtns.forEach((btn) => btn.classList.remove("activo"));
 }
 
 mostrarGastos();
