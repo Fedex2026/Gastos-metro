@@ -1,72 +1,105 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gastos Operativos</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div class="layout">
-  <div class="app">
-    <header>
-      <h1>Gastos Operativos</h1>
-      <p>Control diario y semanal</p>
-    </header>
+  <main class="layout">
 
-    <section class="card">
-      <label>Nombre del operador</label>
-      <select id="operador">
-        <option value="">Selecciona operador</option>
-        <option>Saúl Galván</option>
-        <option>Juan Pérez</option>
-        <option>Carlos López</option>
-        <option>Mario Hernández</option>
-      </select>
+    <section class="panel-form">
+      <header class="header">
+        <div class="logo">💸</div>
+        <h1>Gastos Operativos</h1>
+        <p>Control diario y semanal de operadores</p>
+      </header>
 
-      <label>Tipo de gasto</label>
+      <div class="card">
+        <label>Nombre del operador</label>
+        <select id="operador">
+          <option value="">Selecciona operador</option>
+          <option>Axel</option>
+          <option>Guadalajara</option>
+          <option>Geovanni</option>
+          <option>Oscar</option>
+          <option>Samuel</option>
+          <option>Diego</option>
+          <option>Flako</option>
+          <option>Charly</option>
+          <option>Carlos</option>
+          <option>Eder</option>
+          <option>Toño</option>
+          <option>Troche</option>
+        </select>
 
-      <div class="tipo-grid">
-        <button type="button" class="tipo-btn" data-tipo="Gas">⛽ Gas</button>
-        <button type="button" class="tipo-btn" data-tipo="Diésel">🛢️ Diésel</button>
-        <button type="button" class="tipo-btn" data-tipo="Comida">🍽️ Comida</button>
-        <button type="button" class="tipo-btn" data-tipo="Otros">📌 Otro</button>
+        <label>Tipo de gasto</label>
+
+        <div class="tipo-grid">
+          <div class="tipo-btn" data-tipo="Gas">
+            <span class="icon">⛽</span>
+            <span>Gas</span>
+          </div>
+
+          <div class="tipo-btn" data-tipo="Diésel">
+            <span class="icon">🛢️</span>
+            <span>Diésel</span>
+          </div>
+
+          <div class="tipo-btn" data-tipo="Comida">
+            <span class="icon">🍽️</span>
+            <span>Comida</span>
+          </div>
+
+          <div class="tipo-btn" data-tipo="Otros">
+            <span class="icon">📌</span>
+            <span>Otro</span>
+          </div>
+        </div>
+
+        <input id="otroGasto" class="hidden" placeholder="Escribe el tipo de gasto" />
+
+        <label>Cantidad</label>
+        <input type="number" id="cantidad" placeholder="$0.00" />
+
+        <button type="button" id="guardarBtn" class="btn-principal">
+          Guardar gasto
+        </button>
       </div>
 
-      <input id="otroGasto" class="hidden" placeholder="Escribe el gasto">
+      <div class="resumen">
+        <div class="resumen-card">
+          <span>Hoy</span>
+          <strong id="totalDiario">$0</strong>
+        </div>
 
-      <label>Cantidad</label>
-      <input type="number" id="cantidad" placeholder="$0.00">
-
-      <button type="button" id="guardarBtn" class="guardar">Guardar gasto</button>
-    </section>
-
-    <section class="resumen">
-      <div>
-        <h3>Hoy</h3>
-        <p id="totalDiario">$0</p>
+        <div class="resumen-card">
+          <span>Semana</span>
+          <strong id="totalSemanal">$0</strong>
+        </div>
       </div>
-      <div>
-        <h3>Semana</h3>
-        <p id="totalSemanal">$0</p>
+
+      <div class="acciones-reporte">
+        <button type="button" onclick="mandarWhatsApp('dia')">📲 WhatsApp día</button>
+        <button type="button" onclick="mandarWhatsApp('semana')">📲 WhatsApp semana</button>
+        <button type="button" onclick="generarExcel()">📊 Excel</button>
+        <button type="button" onclick="generarWord()">📄 Word</button>
       </div>
     </section>
 
-    <section class="reportes">
-      <button type="button" onclick="mandarWhatsApp('dia')">WhatsApp día</button>
-      <button type="button" onclick="mandarWhatsApp('semana')">WhatsApp semana</button>
-      <button type="button" onclick="generarExcel()">Generar Excel</button>
-      <button type="button" onclick="generarWord()">Generar Word</button>
+    <section class="historial">
+      <div class="historial-head">
+        <h2>Historial</h2>
+        <p>Gastos registrados</p>
+      </div>
+
+      <div id="listaGastos"></div>
     </section>
-  </div>
 
-  <section class="historial">
-    <h2>Historial</h2>
-    <div id="listaGastos"></div>
-  </section>
-</div>
+  </main>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
